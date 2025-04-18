@@ -1,6 +1,7 @@
 # 📚 Biblioteca de Livros em Python
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
-Uma aplicação simples de gerenciamento de livros feita com Python, utilizando orientação a objetos e um menu interativo no terminal.
+Uma aplicação de gerenciamento de livros feita com Python, utilizando orientação a objetos e um menu interativo no terminal.
 
 ## 🧠 Funcionalidades
 
@@ -11,4 +12,4 @@ Uma aplicação simples de gerenciamento de livros feita com Python, utilizando 
 
 ## 💻 Tecnologias utilizadas
 
-- Python 3.x
+- Python 3.12
