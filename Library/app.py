@@ -137,3 +137,135 @@ class Biblioteca:
                 self.livros = []
         else:
             self.livros = []
+
+app = Flask(__name__)
+app.secret_key = 'biblioteca_secreta'
+
+biblioteca = Biblioteca()
+
+@app.route('/')
+def index():
+    return render_template('index.html', livros=biblioteca.livros)
+
+@app.route('/livros')
+def listar_livros():
+    return render_template('livros.html', livros=biblioteca.livros)
+
+@app.route('/livro/novo', methods=['GET', 'POST'])
+def novo_livro():
+    if request.method == 'POST':
+        livro = Livro(
+            titulo = request.form('titulo'),
+            autor = request.form('autor'),
+            ano = int(request.form('ano')),
+            isbn = request.form('isbn', ''),
+            genero = request.form('genero', '')
+        )
+        sucesso ,mensagem = biblioteca.adicionar_livro(livro)
+        if sucesso:
+            flash(mensagem, 'success')
+            return redirect(url_for('listar_livros'))
+        else:
+            flash(mensagem, 'danger')
+    return render_template('form_livro.html')
+
+@app.route('/livro/<int:id>', methods=['GET', 'POST'])
+def editar_livro(id):
+    livro = biblioteca.buscar_por_id(id)
+    if not livro:
+        flash("Livro não encontrado.", 'danger')
+        return redirect(url_for('listar_livros'))
+    
+    if request.method == 'POST':
+        dados = {
+            'titulo': request.form.get('titulo'),
+            'autor': request.form.get('autor'),
+            'ano': int(request.form.get('ano')),
+            'isbn': request.form.get('isbn',''),
+            'genero': request.form.get('genero', '')
+        }
+        sucesso, mensagem = biblioteca.editar_livro(id, dados)
+        if sucesso:
+            flash(mensagem, 'success')
+            return redirect(url_for('listar_livros'))
+        else:
+            flash(mensagem, 'danger')
+    return render_template('form_livro.html', livro=livro)
+
+@app.route
+def remover_livro(id):
+    sucesso, mensagem = biblioteca.remover_livro(id)
+    if sucesso:
+        flash(mensagem, 'success')
+    else:
+        flash(mensagem, 'danger')
+    return redirect(url_for('listar_livros'))
+
+@app.route('/livro/emprestar/<int:id>', methods=['GET', 'POST'])
+def emprestar_livro(id):
+    livro = biblioteca.buscar_por_id(id)
+    if not livro:
+        flash("Livro não encontrado.", 'danger')
+        return redirect (url_for('listar_livros'))
+    if request.method == 'POST':
+        usuario = request.form.get('usuario')
+        sucesso, mensagem = biblioteca.emprestar_livro(id, usuario)
+        if sucesso:
+            flash(mensagem, 'success')
+            return redirect(url_for('listar_livros'))
+        else:
+            flash(mensagem, 'danger')
+    return render_template('emprestar_livro.html', livro=livro)
+
+@app.route('/livro/devolver/<int:id>')
+def devolver_livro(id):
+    sucesso, mensagem = biblioteca.devolver_livro(id)
+    if sucesso:
+        flash(mensagem, 'success')
+    else:
+        flash(mensagem, 'danger')
+    return redirect(url_for('listar_livros'))
+
+@app.route('/buscar')
+def buscar():
+    termo = request.args.get('termo')
+    tipo = request.args.get('tipo')
+    if tipo == 'titulo':
+        resultado = biblioteca.buscar_por_titulo(termo)
+    elif tipo == 'autor':
+        resultado = biblioteca.buscar_por_autor(termo)
+    elif tipo == 'genero':
+        resultado = biblioteca.buscar_por_genero(termo)
+    elif tipo == 'disponivel':
+        resultado = biblioteca.buscar_disponiveis()
+    elif tipo == 'emprestados':
+        resultado = biblioteca.buscar_emprestados()
+    else:
+        resultado = []
+    return render_template('buscar.html', livros=resultado, termo=termo, tipo=tipo)
+
+@app.route('/api/livros', methods=['GET'])
+def api_listar_livros():
+    return jsonify([livro.to_dict() for livro in biblioteca.livros])
+
+@app.route('/api/livros', methods=['GET'])
+def api_obter_livro(id):
+    livro = biblioteca.buscar_por_id(id)
+    if livro:
+        return jsonify(livro.to_dict())
+    else:
+        return jsonify({"error": "Livro não encontrado."}), 404
+    
+def inicializar_dados():
+    if not biblioteca.livros:
+        livros_exemplo = [
+            Livro(titulo="1984", autor="George Orwell", ano=1949, isbn="1234567890", genero="Ficção Científica"),
+            Livro(titulo="Dom Casmurro", autor="Machado de Assis", ano=1899, isbn="0987654321", genero="Romance"),
+            Livro(titulo="O Senhor dos Anéis", autor="J.R.R. Tolkien", ano=1954, isbn="1122334455", genero="Fantasia"),
+        ]
+        for livro in livros_exemplo:
+            biblioteca.adicionar_livro(livro)
+
+if __name__ == '__main__':
+    inicializar_dados()
+    app.run(debug=True)
