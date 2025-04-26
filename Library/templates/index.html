@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <section class="banner">
+        <h2>Bem-vindo à Biblioteca</h2>
+        <p>Gerencie seu acervo de livros de forma fácil e intuitiva.</p>
+    </section>
+    
+    <section class="stats">
+        <div class="stat-card">
+            <h3>Total de Livros</h3>
+            <p>{{ total_livros }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Livros Disponíveis</h3>
+            <p>{{ livros_disponiveis }}</p>
+        </div>
+    </section>
+{% endblock %}

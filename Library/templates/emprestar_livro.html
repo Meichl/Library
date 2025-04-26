@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Emprestar Livro</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h4>{{ livro.titulo }}</h4>
+                    <p class="text-muted">{{ livro.autor }} ({{ livro.ano }})</p>
+                    {% if livro.genero %}
+                    <p><span class="badge bg-secondary">{{ livro.genero }}</span></p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <form method="post">
+                <div class="mb-3">
+                    <label for="nome_pessoa" class="form-label">Nome do Leitor*</label>
+                    <input type="text" class="form-control" id="nome_pessoa" name="nome_pessoa" required>
+                    <small class="form-text text-muted">Informe o nome da pessoa que está levando o livro emprestado.</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="data_emprestimo" class="form-label">Data do Empréstimo</label>
+                    <input type="date" class="form-control" id="data_emprestimo" name="data_emprestimo" 
+                           value="{{ hoje }}" readonly>
+                    <small class="form-text text-muted">Data atual (preenchida automaticamente).</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="data_devolucao" class="form-label">Data Prevista para Devolução</label>
+                    <input type="date" class="form-control" id="data_devolucao" name="data_devolucao">
+                    <small class="form-text text-muted">Opcional - Data prevista para devolução do livro.</small>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('listar_livros') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-hand-holding"></i> Confirmar Empréstimo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

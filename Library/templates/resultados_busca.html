@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}Resultados da Busca{% endblock %}
+
+{% block content %}
+    <h2>Resultados para "{{ query }}"</h2>
+    
+    {% if resultados %}
+        <ul class="resultados-lista">
+            {% for livro in resultados %}
+            <li>
+                <h3>{{ livro.titulo }}</h3>
+                <p>Autor: {{ livro.autor }}</p>
+                <p>Ano: {{ livro.ano_publicacao }}</p>
+                <p>Status: {{ 'Disponível' if livro.disponivel else 'Emprestado' }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum livro encontrado.</p>
+    {% endif %}
+{% endblock %}

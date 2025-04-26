@@ -14,6 +14,7 @@ class Livro:
     disponivel: bool = True
     data_emprestimo: str = None
     emprestado_para: str = None
+    data_devolucao_prevista: str = None
     id: int = None
 
     def __post_init__(self):
@@ -155,11 +156,11 @@ def listar_livros():
 def novo_livro():
     if request.method == 'POST':
         livro = Livro(
-            titulo = request.form('titulo'),
-            autor = request.form('autor'),
-            ano = int(request.form('ano')),
-            isbn = request.form('isbn', ''),
-            genero = request.form('genero', '')
+            titulo = request.form.get('titulo'),  # ✅ Correto - método get()
+            autor = request.form.get('autor'),
+            ano = int(request.form.get('ano')),
+            isbn = request.form.get('isbn', ''),  # Com valor default
+            genero = request.form.get('genero', '')
         )
         sucesso ,mensagem = biblioteca.adicionar_livro(livro)
         if sucesso:
@@ -205,17 +206,37 @@ def remover_livro(id):
 def emprestar_livro(id):
     livro = biblioteca.buscar_por_id(id)
     if not livro:
-        flash("Livro não encontrado.", 'danger')
-        return redirect (url_for('listar_livros'))
+        flash('Livro não encontrado', 'danger')
+        return redirect(url_for('listar_livros'))
+    
+    # Obtém a data atual formatada para o campo de data
+    hoje = datetime.now().strftime('%Y-%m-%d')
+    
     if request.method == 'POST':
-        usuario = request.form.get('usuario')
-        sucesso, mensagem = biblioteca.emprestar_livro(id, usuario)
+        nome_pessoa = request.form.get('nome_pessoa')
+        data_devolucao = request.form.get('data_devolucao')
+        
+        # Adiciona a data de devolução prevista, se fornecida
+        dados_adicionais = {}
+        if data_devolucao:
+            dados_adicionais['data_devolucao_prevista'] = data_devolucao
+            
+        sucesso, mensagem = biblioteca.emprestar_livro(id, nome_pessoa)
+        
+        # Se quiser salvar a data de devolução prevista
+        if sucesso and data_devolucao:
+            livro = biblioteca.buscar_por_id(id)
+            if livro:
+                livro.data_devolucao_prevista = data_devolucao
+                biblioteca.salvar_dados()
+                
         if sucesso:
             flash(mensagem, 'success')
             return redirect(url_for('listar_livros'))
         else:
             flash(mensagem, 'danger')
-    return render_template('emprestar_livro.html', livro=livro)
+    
+    return render_template('emprestar_livro.html', livro=livro, hoje=hoje)
 
 @app.route('/livro/devolver/<int:id>')
 def devolver_livro(id):

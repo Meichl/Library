@@ -1,0 +1,50 @@
+[
+  {
+    "titulo": "1984",
+    "autor": "George Orwell",
+    "ano": 1949,
+    "isbn": "1234567890",
+    "genero": "Ficção Científica",
+    "disponivel": false,
+    "data_emprestimo": "26/04/2025",
+    "emprestado_para": "Michel",
+    "data_devolucao_prevista": "2025-04-27",
+    "id": 1745666907
+  },
+  {
+    "titulo": "Dom Casmurro",
+    "autor": "Machado de Assis",
+    "ano": 1899,
+    "isbn": "0987654321",
+    "genero": "Romance",
+    "disponivel": true,
+    "data_emprestimo": null,
+    "emprestado_para": null,
+    "data_devolucao_prevista": null,
+    "id": 1745666907
+  },
+  {
+    "titulo": "O Senhor dos Anéis",
+    "autor": "J.R.R. Tolkien",
+    "ano": 1954,
+    "isbn": "1122334455",
+    "genero": "Fantasia",
+    "disponivel": true,
+    "data_emprestimo": null,
+    "emprestado_para": null,
+    "data_devolucao_prevista": null,
+    "id": 1745666907
+  },
+  {
+    "titulo": "The Witcher",
+    "autor": "Polones ai",
+    "ano": 1999,
+    "isbn": "1234567",
+    "genero": "Fantasia",
+    "disponivel": true,
+    "data_emprestimo": null,
+    "emprestado_para": null,
+    "data_devolucao_prevista": null,
+    "id": 1745668445
+  }
+]
